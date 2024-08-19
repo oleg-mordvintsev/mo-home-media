@@ -1,0 +1,51 @@
+version: '3.5'
+services:
+  nginx:
+    build:
+      context: docker/nginx
+    volumes:
+      - ./app:/home-media-app
+      - ./data:/home-media-app/data
+    container_name: ${PROJECT_NAME}-nginx
+    restart: always
+    depends_on:
+      - php-fpm
+    ports:
+      - ${PORT_XML_PLAYER}:80
+
+  php-fpm:
+    build:
+      context: docker/php-fpm
+    volumes:
+      - ./app:/home-media-app
+      - ./data:/home-media-app/data
+    container_name: ${PROJECT_NAME}-php-fpm
+    restart: always
+
+  transmission:
+    build:
+      context: docker/transmission
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - TRANSMISSION_WEB_HOME= #optional
+      - USER= #optional
+      - PASS= #optional
+      - WHITELIST= #optional
+      - PEERPORT= #optional
+      - HOST_WHITELIST= #optional
+    volumes:
+      - ./data:/downloads/complete
+      - ./transmission_config:/config
+      #- /path/to/watch/folder:/watch
+    container_name: ${PROJECT_NAME}-transmission
+    ports:
+      - ${PORT_TORRENT_WEB}:9091
+      - 51413:51413
+      - 51413:51413/udp
+    restart: unless-stopped
+
+networks:
+  default:
+    name: ${PROJECT_NAME}-network
