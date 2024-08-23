@@ -18,3 +18,14 @@
 
 - Остановка
 `./stop`
+
+
+## Install Docker
+- TODO 
+
+## Install Windows
+- TODO 
+
+## Future
+- Json формат
+- Домен(ы) во внутренней сети
