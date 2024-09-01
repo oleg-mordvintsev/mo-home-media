@@ -19,10 +19,10 @@
   и [Docker для windows](https://docs.docker.com/desktop/install/windows-install/)
 
 - Создание директории
-  `mkdir home-media && cd home-media`
+  `mkdir mo-home-media && cd mo-home-media`
 
 - Получение с репозитория
-  `git clone git@github.com:oleg-mordvintsev/home-media.git .`
+  `git clone git@github.com:oleg-mordvintsev/mo-home-media.git .`
 
 - Директория видео и других файлов
   `mkdir data`

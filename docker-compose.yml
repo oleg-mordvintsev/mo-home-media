@@ -4,23 +4,27 @@ services:
     build:
       context: docker/nginx
     volumes:
-      - ./app:/home-media-app
-      - ./data:/home-media-app/data
+      - ./app:/mo-home-media-app
+      - ./data:/mo-home-media-app/data
     container_name: ${PROJECT_NAME}-nginx
     restart: always
     depends_on:
       - php-fpm
     ports:
       - ${PORT_XML_PLAYER}:80
+    networks:
+      - default
 
   php-fpm:
     build:
       context: docker/php-fpm
     volumes:
-      - ./app:/home-media-app
-      - ./data:/home-media-app/data
+      - ./app:/mo-home-media-app
+      - ./data:/mo-home-media-app/data
     container_name: ${PROJECT_NAME}-php-fpm
     restart: always
+    networks:
+      - default
 
   transmission:
     build:
@@ -45,6 +49,8 @@ services:
       - 51413:51413
       - 51413:51413/udp
     restart: unless-stopped
+    networks:
+      - default
 
 networks:
   default:
