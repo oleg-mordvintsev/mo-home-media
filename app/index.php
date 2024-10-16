@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use Services\App;
+use services\App;
 
-require_once __DIR__ . '/Services/App.php';
+require_once __DIR__ . '/services/App.php';
 
 (new App())();
