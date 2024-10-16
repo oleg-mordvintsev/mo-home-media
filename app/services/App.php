@@ -34,29 +34,31 @@ final class App
 
     public function __invoke(): void
     {
-        error_reporting(0);
+        error_reporting(E_ALL);
 
         $this->params();
+
+        $this->delete();
         $this->header($this->isIncorrectInput());
         $this->view();
     }
 
     private function params(): void
     {
-        require_once 'View.php';
-        $this->view = new View($this->isTv ? 'xml' : 'html');
-
         $this->isTv = $this->isTv();
         $this->source = $this->getSource();
         $this->fullSource = $_SERVER['DOCUMENT_ROOT'] . '/data/' . (empty($this->source) ? $this->source : $this->source . '/');
         $this->fullHost = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'];
+
+        require_once 'View.php';
+        $this->view = new View($this->isTv ? 'xml' : 'html');
     }
 
-    private function header(bool $hasRedirect = false): void
+    private function header(bool $hasRedirect = false, string $location = null): void
     {
         if ($hasRedirect) {
             header('HTTP/1.1 301 Moved Permanently');
-            header("Location: {$this->fullHost}");
+            header("Location: " . ($location ?? $this->fullHost));
             exit();
         }
 
@@ -197,5 +199,13 @@ final class App
         }
 
         return false;
+    }
+
+    private function delete(): void
+    {
+        if (isset($_GET['delete'])) {
+            @unlink($this->fullSource . $_GET['delete']); // LASTEDIT Нужно удалять и директории
+            $this->header(true, "/?source={$this->source}");
+        }
     }
 }

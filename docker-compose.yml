@@ -14,6 +14,7 @@ services:
       - ${PORT_XML_PLAYER}:80
     networks:
       - default
+    #user: "1000:1000"
 
   php-fpm:
     build:
@@ -25,6 +26,7 @@ services:
     restart: always
     networks:
       - default
+    user: "1000:1000"
 
   transmission:
     build:
@@ -51,6 +53,7 @@ services:
     restart: unless-stopped
     networks:
       - default
+    user: "1000:1000"
 
 networks:
   default:
