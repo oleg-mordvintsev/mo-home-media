@@ -30,6 +30,7 @@ final class App
     private string $source;
     private string $fullSource;
     private string $fullHost;
+    private bool $isTv;
 
     public function __invoke(): void
     {
@@ -43,8 +44,9 @@ final class App
     private function params(): void
     {
         require_once 'View.php';
-        $this->view = new View();
+        $this->view = new View($this->isTv ? 'xml' : 'html');
 
+        $this->isTv = $this->isTv();
         $this->source = $this->getSource();
         $this->fullSource = $_SERVER['DOCUMENT_ROOT'] . '/data/' . (empty($this->source) ? $this->source : $this->source . '/');
         $this->fullHost = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'];
@@ -58,7 +60,7 @@ final class App
             exit();
         }
 
-        header("Content-Type: text/xml");
+        header($this->isTv ? "Content-Type: text/xml" : "Content-Type: text/html");
         header("Expires: Thu, 19 Feb 1998 13:24:18 GMT");
         header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
         header("Cache-Control: no-cache, must-revalidate");
@@ -104,7 +106,7 @@ final class App
 
         foreach ($files as $key => $file) {
             $fullPath = is_int($key) ? (empty($this->source) ? $file : $this->source . '/' . $file) : $key;
-            $this->view->stream(['{file}' => $file, '{fullHost}' => $this->fullHost, '{fullPath}' => $fullPath]);
+            $this->view->stream(['{file}' => $file, '{fullHost}' => $this->fullHost, '{fullPath}' => $fullPath, '{source}' => $this->source]);
         }
     }
 
@@ -183,5 +185,17 @@ final class App
         $scan(substr($this->fullSource, 0, -1));
 
         return [[], $files];
+    }
+
+    private function isTv(): bool
+    {
+        $words = ['TV', 'Tizen', 'webOS', 'Chromecast', 'Fork'];
+        foreach ($words as $word) {
+            if (str_contains($_SERVER['HTTP_USER_AGENT'], $word)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
