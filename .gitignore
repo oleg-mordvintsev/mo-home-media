@@ -1,4 +1,4 @@
 .idea
 .git
 data
-transmission_config
+deploy/docker/transmission/transmission_config
