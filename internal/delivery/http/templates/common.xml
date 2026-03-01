@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
+<title>{{.Title}}</title>
+<background-image>{{.Protocol}}://{{.Host}}/static/mo-home-media.jpg</background-image>
 <items>
-    <title>{{.Title}}</title>
-    <background-image>{{.Protocol}}://{{.Host}}/static/mo-home-media.jpg</background-image>
     <channel>
         <title>Поиск</title>
         <search_on>Поиск...</search_on>
