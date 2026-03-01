@@ -27,7 +27,7 @@ MO-HOME-MEDIA - идеальное решение для вас.
 1. Откройте PowerShell с правами администратора (щелкните правой кнопкой мыши по "Пуск" и выберите "Терминал (
    Администратор)").
 2. Запустите команду: `wsl --install`
-3. Установите версию Ubuntu: `wsl --set-version Ubuntu-24.04 2`
+3. Установите версию Ubuntu: `wsl --set-version Ubuntu-22.04 2`
 4. После завершения установки, откройте терминал установленной Ubuntu и выполните инструкции из раздела  "Установка
    Docker на Ubuntu".
 
@@ -70,7 +70,7 @@ MO-HOME-MEDIA - идеальное решение для вас.
 ### TEST Docker in Docker
 
 - Запуск контейнера с Ubuntu 22.04 с пробросом сокета, чтобы docker в docker смог запустить приложение
-  `docker run -it --rm -v /var/run/docker.sock:/var/run/docker.sock ubuntu:24.04 bash`
+  `docker run -it --rm -v /var/run/docker.sock:/var/run/docker.sock ubuntu:22.04 bash`
 
 - Установка curl для скачивания скриптов установки
   `apt update && apt install -y curl`
@@ -81,8 +81,8 @@ MO-HOME-MEDIA - идеальное решение для вас.
   `curl -fsSL https://github.com/oleg-mordvintsev/mo-home-media/raw/refs/heads/main/init.sh | sed 's/sudo //g' | bash`
 
 - Установка происходит в директорию `/mo-home-media`
-  `cd /mo-home-media && ./start.sh`
-  `cd /mo-home-media && ./stop.sh`
+    - `cd /mo-home-media && ./start.sh`
+    - `cd /mo-home-media && ./stop.sh`
 
 # TODO:
 
