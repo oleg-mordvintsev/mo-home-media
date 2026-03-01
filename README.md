@@ -2,7 +2,8 @@
 
 ## Описание
 
-MO-HOME-MEDIA - это набор инструментов, предназначенных для удобного скачивания видео контента через торренты и просмотра
+MO-HOME-MEDIA - это набор инструментов, предназначенных для удобного скачивания видео контента через торренты и
+просмотра
 его на смарт ТВ с помощью ForkPlayer или подобных плееров.
 
 Данный комплект решает проблему с онлайн-кинотеатрами, которые часто тормозят или недоступны с хорошим качеством видео.
@@ -16,31 +17,12 @@ MO-HOME-MEDIA - идеальное решение для вас.
 ### Требования
 
 * **Docker:** Необходимо установить Docker. Инструкции по установке представлены ниже.
-* **WSL2 (для Windows):** Если вы используете Windows, необходимо установить Windows Subsystem for Linux 2  (WSL2).
+* **WSL2 (для Windows):** Если вы используете Windows, необходимо установить Windows Subsystem for Linux 2 (WSL2).
 * **ForkPlayer (необязательно):** Для просмотра скачанных файлов на смарт ТВ рекомендуется
   установить [ForkPlayer](http://forkplayer.tv/) или подобный плеер? позволяющий просматривать списки и воспроизводить
   видео файлы по прямым ссылкам в сети.
 
-### Установка Docker
-
-#### Ubuntu
-
-1. Обновляем репозитории: `sudo apt-get update`
-2. Устанавливаем необходимые пакеты: `sudo apt-get install ca-certificates curl`
-3. Создаем каталог для ключей: `sudo install -m 0755 -d /etc/apt/keyrings`
-4. Скачиваем ключ Docker: `sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc`
-5. Устанавливаем права на ключ: `sudo chmod a+r /etc/apt/keyrings/docker.asc`
-6. Добавляем репозиторий Docker:
-   `echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null`
-7. Обновляем репозитории: `sudo apt-get update`
-8. Устанавливаем Docker:
-   `sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin`
-9. По итогу у Вас будет два адреса:
-   9.1. http://localhost:777 - адрес, который необходимо ввести в поисковой строке на главной странице Fork Player
-   9.2. http://localhost:888 - адрес, который можете открыть, к примеру, со смартфона, и торрент клиент сразу будет
-   доступен
-
-#### Windows
+### Windows (Пропускаем если у Вас Ubuntu)
 
 1. Откройте PowerShell с правами администратора (щелкните правой кнопкой мыши по "Пуск" и выберите "Терминал (
    Администратор)").
@@ -49,39 +31,60 @@ MO-HOME-MEDIA - идеальное решение для вас.
 4. После завершения установки, откройте терминал установленной Ubuntu и выполните инструкции из раздела  "Установка
    Docker на Ubuntu".
 
-### Настройка проекта
+### Установка Docker (Пропускаем если docker уже установлен)
 
-1. Создайте директорию для проекта: `mkdir MO-HOME-MEDIA && cd MO-HOME-MEDIA`
-2. Клонируйте репозиторий: `git clone git@github.com:oleg-mordvintsev/MO-HOME-MEDIA.git .`
-3. Создайте директорию для данных: `mkdir data`
-4. Установите права на запуск скриптов: `chmod +x start && chmod +x stop`
+- Установка curl для скачивания скриптов установки
+  `apt update && apt install -y curl`
 
-### Запуск и остановка
+- Установка docker в docker
+  `curl -fsSL https://github.com/oleg-mordvintsev/mo-home-media/raw/refs/heads/main/docker-install.sh | sed 's/sudo //g' | bash`
 
-## Install
-- Создание директории
-`mkdir home-media && cd home-media`
+### Установка и запуск приложения
 
-- Получение с репозитория
-`git clone git@github.com:oleg-mordvintsev/home-media.git .`
+- Установка curl для скачивания скриптов установки
+  `apt update && apt install -y curl`
 
-- Директория видео и других файлов
-  `mkdir data`
- 
-- Устанавливаем права на запуск
-`chmod +x start && chmod +x stop`
+- Установка и запуск приложения
+  `curl -fsSL https://github.com/oleg-mordvintsev/mo-home-media/raw/refs/heads/main/init.sh | sed 's/sudo //g' | bash`
 
-- Запуск
-`./start`
+- Установка происходит по умолчанию в домашнюю директорию `~/mo-home-media`
+  `cd ~/mo-home-media && ./start.sh`
+  `cd ~/mo-home-media && ./stop.sh`
 
-- Остановка
-`./stop`
+- Приложение будет доступна с разных портов:
+    - Вам необходимо определить IP-адрес вашего компьютера
+        - Для Windows оптимально
+            - "Пуск" -> "Выполнить" -> `cmd` -> `ipconfig`
+            - В списке адаптеров ищем тот, что с указанным шлюзом
+            - В блоке с указанным шлюзом находим `IPv4-адрес` это и будет ip (обычно начинается со `192.168.`)
+        - Для Ubuntu
+            - Открываем терминал
+            - Сразу результат `ip -4 -br addr show | grep -vE '^(docker|br-|veth|virbr|lo)' | awk '{print $3}' | cut -d'/' -f1`
+            - `ifconfig` - ищем то, что RUNNING и имеет заполненный broadcast (шлюз)
+        - Если ip начинается с `172`, то это не тот, что нужен
+    - http://ip:777 или http://localhost:777 или http://192.168.0.100:777 - пример адреса, который необходимо ввести в
+      поисковой строке на главной странице Fork Player
+    - http://ip:888 или http://localhost:888 или http://192.168.0.100:888 - адрес, который можете открыть, к примеру, со
+      смартфона, и торрент клиент сразу будет
+
+### TEST Docker in Docker
+
+- Запуск контейнера с Ubuntu 22.04 с пробросом сокета, чтобы docker в docker смог запустить приложение
+  `docker run -it --rm -v /var/run/docker.sock:/var/run/docker.sock ubuntu:24.04 bash`
+
+- Установка curl для скачивания скриптов установки
+  `apt update && apt install -y curl`
+
+- Установка docker в docker
+  `curl -fsSL https://github.com/oleg-mordvintsev/mo-home-media/raw/refs/heads/main/docker-install.sh | sed 's/sudo //g' | bash`
+- Установка и запуск приложения
+  `curl -fsSL https://github.com/oleg-mordvintsev/mo-home-media/raw/refs/heads/main/init.sh | sed 's/sudo //g' | bash`
+
+- Установка происходит в директорию `/mo-home-media`
+  `cd /mo-home-media && ./start.sh`
+  `cd /mo-home-media && ./stop.sh`
 
 # TODO:
 
-- Нужно подключить логирование
-- Надо все скрипты переписать с расширением sh
-- Нужно покрыть тестами 
-- Нужен скрипт install
-- env должен создаваться при install
-- Проверить написанное в Readme
+- Подключить логирование
+- Покрыть тестами
